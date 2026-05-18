@@ -2439,6 +2439,7 @@ public:
     uint64_t m_lastSpeedProgress64;
     double m_lastSpeedBps;
     bool  m_forcedMarquee;   // true once we detect an increasing total size
+    bool  m_unreliableTotal; // true when server/runtime reports an obviously capped total size
 
     CDownloadProgress(HWND hProg, HWND hStats)
         : m_hProgress(hProg), m_hStats(hStats), m_startTime(GetTickCount64()),
@@ -2446,7 +2447,7 @@ public:
         m_lastProgress(0), m_lastProgressMax(0),
         m_progressBase(0), m_totalBase(0), m_progress64(0), m_total64(0),
         m_lastSpeedProgress64(0), m_lastSpeedBps(0.0),
-        m_forcedMarquee(false) {}
+        m_forcedMarquee(false), m_unreliableTotal(false) {}
 
     // The most important method: called by Windows as data arrives
     STDMETHOD(OnProgress)(ULONG ulProgress, ULONG ulProgressMax, ULONG ulStatusCode, LPCWSTR szStatusText) {
@@ -2483,6 +2484,14 @@ public:
             m_total64 = m_totalBase + (uint64_t)ulProgressMax;
         }
 
+        // Some 32-bit/Wine URLMon paths cap Content-Length around 2GB for huge files.
+        // Treat that reported total as unreliable to avoid bogus percentages/overflow behavior.
+        if (ulProgressMax >= 0x7FFF0000UL)
+            m_unreliableTotal = true;
+
+        if (m_total64 > 0 && m_progress64 > m_total64)
+            m_unreliableTotal = true;
+
         ULONGLONG nowTick = GetTickCount64();
         if (nowTick > m_lastSpeedTick && m_progress64 >= m_lastSpeedProgress64) {
             ULONGLONG dt = nowTick - m_lastSpeedTick;
@@ -2511,7 +2520,7 @@ public:
             m_lastProgressMax = ulProgressMax;
         m_lastProgress = ulProgress;
 
-        bool unknownSize = (ulProgressMax == 0) || m_forcedMarquee;
+        bool unknownSize = (ulProgressMax == 0) || m_forcedMarquee || m_unreliableTotal;
 
         if (g_activeDownloads == 1) {
             if (unknownSize) {
