@@ -1,7 +1,3 @@
-Absolutely! Here's a professional `README.md` for your GitHub repository root:
-
----
-
 # 🪟 Windows Toolbox
 
 **A comprehensive Windows system utility - Download Manager, ChkDsk GUI, Apps Manager, Startup Manager, System Info & Activation Helper**
