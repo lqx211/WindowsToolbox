@@ -139,12 +139,6 @@ Includes popular tools across categories:
 
 ---
 
-## ⚖️ License
-
-This project is **proprietary but open source** - you may view, study, and modify the code for personal use. Redistribution requires attribution.
-
----
-
 ## ⚠️ Disclaimer
 
 **THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED.**
