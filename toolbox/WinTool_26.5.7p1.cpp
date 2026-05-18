@@ -17,7 +17,7 @@
 #pragma comment(lib, "shell32.lib")
 #pragma comment(linker, "/manifestdependency:\"type='win32' name='Microsoft.Windows.Common-Controls' version='6.0.0.0' processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 
-const wchar_t* g_version = L"26.5.6";
+const wchar_t* g_version = L"26.5.7p1";
 
 // 控件 ID
 #define ID_LIST_PROGRAMS       1001
